@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Financial Tracker - AI-Powered Money Management</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <span class="logo">💰</span>
+            <span class="app-name">Smart Financial Tracker</span>
+        </div>
+        <div class="nav-actions">
+            <span id="topbarUserName" style="margin-right: 12px;"></span>
+            <button class="btn btn-outline" id="logoutBtn" title="Logout">Logout</button>
+        </div>
+        <button class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="user-profile">
+                <div class="user-avatar" id="sidebarAvatar">U</div>
+                <div class="user-info">
+                    <div class="user-name" id="sidebarUserName">User</div>
+                    <div class="user-points">⭐ <span id="userPoints">285</span> points</div>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-view="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-view="add-transaction">
+                    <span class="nav-icon">➕</span>
+                    <span class="nav-text">Add Transaction</span>
+                </a>
+                <a href="#" class="nav-item" data-view="expense-tracking">
+                    <span class="nav-icon">🧾</span>
+                    <span class="nav-text">Expense Tracking</span>
+                </a>
+                <a href="#" class="nav-item" data-view="budget-management">
+                    <span class="nav-icon">💼</span>
+                    <span class="nav-text">Budget Management</span>
+                    <span class="badge" id="budgetBadge" style="display:none;">!</span>
+                </a>
+                <a href="#" class="nav-item" data-view="ai-insights">
+                    <span class="nav-icon">🤖</span>
+                    <span class="nav-text">AI Insights</span>
+                </a>
+                <a href="#" class="nav-item" data-view="savings-tracker">
+                    <span class="nav-icon">🎯</span>
+                    <span class="nav-text">Savings Tracker</span>
+                </a>
+                <a href="#" class="nav-item" data-view="visualizations">
+                    <span class="nav-icon">📈</span>
+                    <span class="nav-text">Visualizations</span>
+                </a>
+                <a href="#" class="nav-item" data-view="gamification">
+                    <span class="nav-icon">🏆</span>
+                    <span class="nav-text">Gamification</span>
+                </a>
+                <a href="#" class="nav-item" data-view="settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard View -->
+            <div id="dashboard" class="view active">
+                <div class="view-header">
+                    <h1>Welcome back, <span class="highlight" id="welcomeName">User</span>!</h1>
+                    <p class="subtitle">Here's your financial overview</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card income">
+                        <div class="stat-icon">💵</div>
+                        <div class="stat-details">
+                            <div class="stat-label">Total Income</div>
+                            <div class="stat-value" id="totalIncome">₹57,000</div>
+                        </div>
+                    </div>
+                    <div class="stat-card expense">
+                        <div class="stat-icon">💸</div>
+                        <div class="stat-details">
+                            <div class="stat-label">Total Expenses</div>
+                            <div class="stat-value" id="totalExpenses">₹15,150</div>
+                        </div>
+                    </div>
+                    <div class="stat-card balance">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-details">
+                            <div class="stat-label">Current Balance</div>
+                            <div class="stat-value" id="currentBalance">₹41,850</div>
+                        </div>
+                    </div>
+                    <div class="stat-card savings">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-details">
+                            <div class="stat-label">Savings Progress</div>
+                            <div class="stat-value" id="savingsProgress">27.9%</div>
+                            <div class="stat-subtext">of ₹150,000 goal</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="navigateToView('add-transaction')">
+                        <span>➕</span> Add Expense
+                    </button>
+                    <button class="btn btn-secondary" onclick="navigateToView('add-transaction', 'income')">
+                        <span>💵</span> Add Income
+                    </button>
+                    <button class="btn btn-outline" onclick="navigateToView('ai-insights')">
+                        <span>🤖</span> View Insights
+                    </button>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card chart-card">
+                        <h3>Spending by Category</h3>
+                        <div class="chart-container">
+                            <canvas id="categoryPieChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card chart-card">
+                        <h3>Income vs Expenses</h3>
+                        <div class="chart-container">
+                            <canvas id="incomeExpenseChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card recent-transactions">
+                        <h3>Recent Transactions</h3>
+                        <div id="recentTransactionsList"></div>
+                    </div>
+
+                    <div class="card chart-card">
+                        <h3>Spending Trends</h3>
+                        <div class="chart-container">
+                            <canvas id="spendingTrendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Transaction View -->
+            <div id="add-transaction" class="view">
+                <div class="view-header">
+                    <h1>Add Transaction</h1>
+                    <p class="subtitle">Record your income or expenses</p>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" data-tab="expense">Add Expense</button>
+                    <button class="tab" data-tab="income">Add Income</button>
+                </div>
+
+                <div class="tab-content">
+                    <div id="expense-tab" class="tab-pane active">
+                        <form id="expenseForm" class="transaction-form">
+                            <div class="form-group">
+                                <label for="expenseDate">Date</label>
+                                <input type="date" id="expenseDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="expenseAmount">Amount (₹)</label>
+                                <input type="number" id="expenseAmount" placeholder="0" min="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="expenseCategory">Category</label>
+                                <select id="expenseCategory" required>
+                                    <option value="">Select category</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="expenseDescription">Description</label>
+                                <input type="text" id="expenseDescription" placeholder="e.g., Dinner at restaurant" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="expensePaymentMode">Payment Mode</label>
+                                <select id="expensePaymentMode" required>
+                                    <option value="">Select payment mode</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Credit Card">Credit Card</option>
+                                    <option value="Debit Card">Debit Card</option>
+                                    <option value="UPI">UPI</option>
+                                    <option value="Net Banking">Net Banking</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-large">Add Expense</button>
+                        </form>
+                    </div>
+
+                    <div id="income-tab" class="tab-pane">
+                        <form id="incomeForm" class="transaction-form">
+                            <div class="form-group">
+                                <label for="incomeDate">Date</label>
+                                <input type="date" id="incomeDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="incomeAmount">Amount (₹)</label>
+                                <input type="number" id="incomeAmount" placeholder="0" min="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="incomeSource">Source</label>
+                                <input type="text" id="incomeSource" placeholder="e.g., Salary, Freelance" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="incomeType">Type</label>
+                                <select id="incomeType" required>
+                                    <option value="">Select type</option>
+                                    <option value="Regular">Regular</option>
+                                    <option value="Irregular">Irregular</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-large">Add Income</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expense Tracking View -->
+            <div id="expense-tracking" class="view">
+                <div class="view-header">
+                    <h1>Expense Tracking</h1>
+                    <p class="subtitle">View and manage all your expenses</p>
+                </div>
+
+                <div class="filters">
+                    <div class="filter-group">
+                        <input type="text" id="searchExpenses" placeholder="🔍 Search transactions...">
+                    </div>
+                    <div class="filter-group">
+                        <select id="filterCategory">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <select id="filterPaymentMode">
+                            <option value="">All Payment Modes</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Credit Card">Credit Card</option>
+                            <option value="Debit Card">Debit Card</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Net Banking">Net Banking</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary" onclick="exportToCSV()">📥 Export CSV</button>
+                </div>
+
+                <div class="expense-summary">
+                    <h3>Total Expenses: <span id="filteredTotal">₹15,150</span></h3>
+                </div>
+
+                <div id="expensesList" class="transactions-list"></div>
+            </div>
+
+            <!-- Budget Management View -->
+            <div id="budget-management" class="view">
+                <div class="view-header">
+                    <h1>Budget Management</h1>
+                    <p class="subtitle">Monitor your spending against budget limits</p>
+                </div>
+
+                <div class="budget-overview">
+                    <h3>Monthly Budget: ₹50,000</h3>
+                    <div class="overall-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="overallBudgetProgress" style="width: 30.3%;"></div>
+                        </div>
+                        <span id="overallBudgetText">₹15,150 of ₹50,000 (30.3%)</span>
+                    </div>
+                </div>
+
+                <div id="budgetCategories" class="budget-grid"></div>
+            </div>
+
+            <!-- AI Insights View -->
+            <div id="ai-insights" class="view">
+                <div class="view-header">
+                    <h1>AI Insights &amp; Assistant</h1>
+                    <p class="subtitle">Smart recommendations and personalized financial advice</p>
+                </div>
+
+                <div class="insights-layout">
+                    <div class="insights-panel">
+                        <h3>💡 AI-Powered Insights</h3>
+                        <div id="insightsList" class="insights-list"></div>
+                    </div>
+
+                    <div class="chatbot-panel">
+                        <h3>🤖 Financial Assistant</h3>
+                        <div class="chat-window" id="chatWindow">
+                            <div class="chat-message bot">
+                                <div class="message-content">
+                                    Hi Lishanth! 👋 I'm your AI financial assistant. Ask me anything about your expenses, budget, or savings!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="quick-questions">
+                            <button class="quick-btn" onclick="askQuestion('How much did I spend on food?')">How much did I spend on food?</button>
+                            <button class="quick-btn" onclick="askQuestion('Am I on track with my budget?')">Am I on track with my budget?</button>
+                            <button class="quick-btn" onclick="askQuestion('Show my travel expenses')">Show my travel expenses</button>
+                        </div>
+                        <div class="chat-input-container">
+                            <input type="text" id="chatInput" placeholder="Ask me anything..." onkeypress="handleChatKeypress(event)">
+                            <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Savings Tracker View -->
+            <div id="savings-tracker" class="view">
+                <div class="view-header">
+                    <h1>Savings Tracker</h1>
+                    <p class="subtitle">Track your progress towards your savings goal</p>
+                </div>
+
+                <div class="savings-overview">
+                    <div class="savings-circle-container">
+                        <svg class="progress-ring" width="200" height="200">
+                            <circle class="progress-ring-circle-bg" stroke="#e0e0e0" stroke-width="15" fill="transparent" r="85" cx="100" cy="100"/>
+                            <circle class="progress-ring-circle" id="savingsCircle" stroke="#10b981" stroke-width="15" fill="transparent" r="85" cx="100" cy="100" stroke-dasharray="534.07" stroke-dashoffset="385.33"/>
+                        </svg>
+                        <div class="progress-text">
+                            <div class="progress-percentage" id="savingsPercentage">27.9%</div>
+                            <div class="progress-label">Achieved</div>
+                        </div>
+                    </div>
+
+                    <div class="savings-details">
+                        <div class="savings-stat">
+                            <span class="label">Target Amount</span>
+                            <span class="value">₹1,50,000</span>
+                        </div>
+                        <div class="savings-stat">
+                            <span class="label">Current Savings</span>
+                            <span class="value">₹41,850</span>
+                        </div>
+                        <div class="savings-stat">
+                            <span class="label">Remaining</span>
+                            <span class="value">₹1,08,150</span>
+                        </div>
+                        <div class="savings-stat">
+                            <span class="label">Deadline</span>
+                            <span class="value">Dec 31, 2025</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="projection-card">
+                    <h3>📊 Projection</h3>
+                    <p>At your current savings rate, you'll reach your goal by <strong>June 2026</strong>.</p>
+                    <p class="tip">💡 To reach your goal on time, try to save ₹15,000 per month.</p>
+                </div>
+
+                <div class="milestones">
+                    <h3>🏆 Milestones</h3>
+                    <div class="milestone-grid">
+                        <div class="milestone achieved">
+                            <div class="milestone-icon">✅</div>
+                            <div class="milestone-label">25%</div>
+                            <div class="milestone-amount">₹37,500</div>
+                        </div>
+                        <div class="milestone">
+                            <div class="milestone-icon">🎯</div>
+                            <div class="milestone-label">50%</div>
+                            <div class="milestone-amount">₹75,000</div>
+                        </div>
+                        <div class="milestone">
+                            <div class="milestone-icon">🎯</div>
+                            <div class="milestone-label">75%</div>
+                            <div class="milestone-amount">₹1,12,500</div>
+                        </div>
+                        <div class="milestone">
+                            <div class="milestone-icon">🏆</div>
+                            <div class="milestone-label">100%</div>
+                            <div class="milestone-amount">₹1,50,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="savings-tips">
+                    <h3>💡 Savings Tips</h3>
+                    <ul>
+                        <li>Consider automating your savings with a monthly transfer</li>
+                        <li>Look for ways to reduce entertainment spending</li>
+                        <li>Cook at home more often to save on food expenses</li>
+                        <li>Review subscriptions and cancel unused ones</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Visualizations View -->
+            <div id="visualizations" class="view">
+                <div class="view-header">
+                    <h1>Data Visualizations</h1>
+                    <p class="subtitle">Interactive charts and analytics</p>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="card chart-card">
+                        <h3>Monthly Spending Trends</h3>
+                        <div class="chart-container">
+                            <canvas id="monthlyTrendChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card chart-card">
+                        <h3>Category-wise Spending</h3>
+                        <div class="chart-container">
+                            <canvas id="categoryBarChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card chart-card">
+                        <h3>Payment Mode Distribution</h3>
+                        <div class="chart-container">
+                            <canvas id="paymentModeChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card chart-card">
+                        <h3>Income vs Expenses Comparison</h3>
+                        <div class="chart-container">
+                            <canvas id="comparisonChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gamification View -->
+            <div id="gamification" class="view">
+                <div class="view-header">
+                    <h1>Gamification</h1>
+                    <p class="subtitle">Earn points and unlock achievements</p>
+                </div>
+
+                <div class="gamification-header">
+                    <div class="level-card">
+                        <div class="level-badge">Level 5</div>
+                        <div class="points-display">
+                            <span class="points-value" id="totalPoints">285</span>
+                            <span class="points-label">Total Points</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="achievements-section">
+                    <h3>🏆 Achievements</h3>
+                    <div class="achievements-grid">
+                        <div class="achievement unlocked">
+                            <div class="achievement-icon">🏆</div>
+                            <h4>Budget Master</h4>
+                            <p>Stay within budget for 3 consecutive months</p>
+                            <span class="achievement-status">Unlocked!</span>
+                        </div>
+                        <div class="achievement locked">
+                            <div class="achievement-icon">💰</div>
+                            <h4>Savings Champion</h4>
+                            <p>Save ₹10,000 in a month</p>
+                            <span class="achievement-status">Locked</span>
+                        </div>
+                        <div class="achievement unlocked">
+                            <div class="achievement-icon">📊</div>
+                            <h4>Expense Tracker</h4>
+                            <p>Log expenses for 30 consecutive days</p>
+                            <span class="achievement-status">Unlocked!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="challenges-section">
+                    <h3>🎯 Active Challenges</h3>
+                    <div class="challenge-card">
+                        <h4>No-Spend Weekend</h4>
+                        <p>Don't spend money for 2 days</p>
+                        <div class="challenge-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 50%;"></div>
+                            </div>
+                            <span>1 of 2 days complete</span>
+                        </div>
+                        <div class="challenge-reward">Reward: 100 points</div>
+                    </div>
+                    <div class="challenge-card">
+                        <h4>Cook at Home Challenge</h4>
+                        <p>Eat home-cooked meals for 7 days</p>
+                        <div class="challenge-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 42.8%;"></div>
+                            </div>
+                            <span>3 of 7 days complete</span>
+                        </div>
+                        <div class="challenge-reward">Reward: 150 points</div>
+                    </div>
+                </div>
+
+                <div class="leaderboard-section">
+                    <h3>📋 Leaderboard</h3>
+                    <div class="leaderboard">
+                        <div class="leaderboard-item rank-1">
+                            <span class="rank">1</span>
+                                <span class="username">You</span>
+                            <span class="points">285 pts</span>
+                        </div>
+                        <div class="leaderboard-item">
+                            <span class="rank">2</span>
+                                <span class="username">Lewin</span>
+                            <span class="points">265 pts</span>
+                        </div>
+                        <div class="leaderboard-item">
+                            <span class="rank">3</span>
+                                <span class="username">Lishanth</span>
+                            <span class="points">240 pts</span>
+                        </div>
+                        <div class="leaderboard-item">
+                            <span class="rank">4</span>
+                                <span class="username">Lakshmana</span>
+                            <span class="points">220 pts</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settings" class="view">
+                <div class="view-header">
+                    <h1>Settings</h1>
+                    <p class="subtitle">Manage your preferences</p>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="card settings-card">
+                        <h3>👤 User Profile</h3>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" value="Lishanth" id="userName">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" value="lishanth@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Currency</label>
+                            <select id="currencyPreference">
+                                <option value="INR" selected>INR (₹)</option>
+                                <option value="USD">USD ($)</option>
+                                <option value="EUR">EUR (€)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="card settings-card">
+                        <h3>💼 Budget Preferences</h3>
+                        <div class="form-group">
+                            <label>Monthly Budget (₹)</label>
+                            <input type="number" value="50000" id="monthlyBudget">
+                        </div>
+                        <div class="form-group">
+                            <label>Savings Goal (₹)</label>
+                            <input type="number" value="150000" id="savingsGoal">
+                        </div>
+                        <div class="form-group">
+                            <label>Goal Deadline</label>
+                            <input type="date" value="2025-12-31" id="goalDeadline">
+                        </div>
+                    </div>
+
+                    <div class="card settings-card">
+                        <h3>🔔 Notifications</h3>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" checked>
+                                Email alerts for budget limits
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" checked>
+                                Weekly spending summary
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox">
+                                Savings milestone notifications
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="card settings-card">
+                        <h3>📂 Data Management</h3>
+                        <button class="btn btn-secondary btn-full">📥 Export All Data (CSV)</button>
+                        <button class="btn btn-secondary btn-full">📊 Download Monthly Report</button>
+                        <button class="btn btn-outline btn-full">🔄 Reset All Data</button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="db.js"></script>
+    <script>
+      (function guard() {
+        if (localStorage.getItem('isLoggedIn') !== 'true' || !localStorage.getItem('userEmail')) {
+          window.location.replace('login.html');
+        }
+      })();
+    </script>
+    <script src="app.js"></script>
+    <script>
+      (function hydrateUser() {
+        const name = 'You';
+        const initial = 'Y';
+        const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+        setText('sidebarUserName', name);
+        setText('welcomeName', name);
+        setText('topbarUserName', name);
+        const avatar = document.getElementById('sidebarAvatar');
+        if (avatar) avatar.textContent = initial;
+        const logout = document.getElementById('logoutBtn');
+        if (logout) {
+          logout.addEventListener('click', function() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userName');
+            window.location.replace('login.html');
+          });
+        }
+      })();
+    </script>
+</body>
+</html>

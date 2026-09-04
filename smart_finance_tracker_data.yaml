@@ -1,0 +1,162 @@
+users:
+  user_profile:
+    name: Lishanth
+    currency: INR
+    monthly_budget: 50000
+    savings_goal: 150000
+    savings_goal_deadline: '2025-12-31'
+categories:
+- id: 1
+  name: Food
+  icon: 🍔
+  budget_limit: 10000
+  color: '#FF6B6B'
+- id: 2
+  name: Travel
+  icon: 🚗
+  budget_limit: 8000
+  color: '#4ECDC4'
+- id: 3
+  name: Entertainment
+  icon: 🎬
+  budget_limit: 5000
+  color: '#FFE66D'
+- id: 4
+  name: Shopping
+  icon: 🛍️
+  budget_limit: 15000
+  color: '#95E1D3'
+- id: 5
+  name: Bills
+  icon: 💡
+  budget_limit: 7000
+  color: '#F38181'
+- id: 6
+  name: Healthcare
+  icon: ⚕️
+  budget_limit: 5000
+  color: '#AA96DA'
+sample_expenses:
+- date: '2025-10-01'
+  category: Food
+  amount: 250
+  description: Dinner at restaurant
+  payment_mode: Credit Card
+- date: '2025-10-03'
+  category: Travel
+  amount: 800
+  description: Uber rides
+  payment_mode: UPI
+- date: '2025-10-05'
+  category: Shopping
+  amount: 3200
+  description: New shoes
+  payment_mode: Debit Card
+- date: '2025-10-08'
+  category: Food
+  amount: 450
+  description: Groceries
+  payment_mode: Cash
+- date: '2025-10-10'
+  category: Entertainment
+  amount: 1200
+  description: Movie tickets
+  payment_mode: UPI
+- date: '2025-10-12'
+  category: Bills
+  amount: 2500
+  description: Electricity bill
+  payment_mode: Net Banking
+- date: '2025-10-15'
+  category: Food
+  amount: 650
+  description: Restaurant
+  payment_mode: Credit Card
+- date: '2025-10-18'
+  category: Healthcare
+  amount: 1800
+  description: Medical checkup
+  payment_mode: Debit Card
+- date: '2025-10-20'
+  category: Travel
+  amount: 1500
+  description: Bus tickets
+  payment_mode: UPI
+- date: '2025-10-22'
+  category: Shopping
+  amount: 2800
+  description: Clothing
+  payment_mode: Credit Card
+sample_income:
+- date: '2025-10-01'
+  source: Salary
+  amount: 45000
+  type: Regular
+- date: '2025-10-15'
+  source: Freelance Project
+  amount: 12000
+  type: Irregular
+ai_insights:
+- type: spending_alert
+  category: Food
+  message: Your food spending increased by 20% this month compared to last month.
+  recommendation: Consider cooking at home twice a week to save around ₹1,000 per
+    month.
+- type: savings_suggestion
+  message: You're ₹5,000 away from your monthly savings target.
+  recommendation: Reduce entertainment spending by 15% to reach your goal faster.
+- type: budget_prediction
+  category: Travel
+  current_spend: 2300
+  predicted_month_end: 4200
+  budget_limit: 8000
+  status: On track
+budget_alerts:
+- category: Shopping
+  spent: 6000
+  limit: 15000
+  percentage: 40
+  status: Warning
+  message: You've used 40% of your shopping budget
+ml_features:
+  expense_categorization:
+    model: NLP-based keyword detection
+    accuracy: 95%
+    examples:
+    - text: Swiggy order
+      predicted_category: Food
+    - text: Ola cab
+      predicted_category: Travel
+    - text: Amazon purchase
+      predicted_category: Shopping
+  spending_prediction:
+    model: Linear Regression
+    features:
+    - historical_spending
+    - day_of_month
+    - category
+    - monthly_income
+    prediction_horizon: next_month
+gamification:
+  points_system:
+    add_expense: 5
+    stay_within_budget: 50
+    achieve_savings_goal: 100
+    daily_login: 10
+  achievements:
+  - name: Budget Master
+    description: Stay within budget for 3 consecutive months
+    icon: 🏆
+  - name: Savings Champion
+    description: Save ₹10,000 in a month
+    icon: 💰
+  - name: Expense Tracker
+    description: Log expenses for 30 consecutive days
+    icon: 📊
+  challenges:
+  - name: No-Spend Weekend
+    description: Don't spend money for 2 days
+    reward: 100
+  - name: Cook at Home Challenge
+    description: Eat home-cooked meals for 7 days
+    reward: 150

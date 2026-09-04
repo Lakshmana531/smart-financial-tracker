@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Smart Financial Tracker</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo">💰</div>
+                <h1>Smart Financial Tracker</h1>
+                <p class="subtitle">Sign in to access your dashboard</p>
+            </div>
+
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+            </form>
+
+            <div class="login-footer">
+                <p>Don't have an account? <a href="sign-up.html">Create one</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="db.js"></script>
+    <script>
+    (function() {
+      if (localStorage.getItem('isLoggedIn') === 'true') {
+        window.location.replace('index.html');
+        return;
+      }
+      document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value.trim();
+        const nameGuess = email.split('@')[0] || 'User';
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', email.toLowerCase());
+        localStorage.setItem('userName', nameGuess.charAt(0).toUpperCase() + nameGuess.slice(1));
+        (async function() {
+          const e = email.toLowerCase();
+          const n = localStorage.getItem('userName');
+          const apiOk = await (window.API ? API.upsertUserProfile(e, n) : null);
+          if (!apiOk) DB.upsertUserProfile({ email: e, name: n });
+        })();
+        window.location.replace('index.html');
+      });
+    })();
+    </script>
+</body>
+<!-- Keep this page minimal; all app logic lives in index.html + app.js -->
+</html>
+
